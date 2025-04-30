@@ -1,0 +1,16 @@
+[package]
+name = "json-api"
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+publish.workspace = true
+edition.workspace = true
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["json", "tls"] }
+fetcher.workspace = true
+minreq = { version = "2.13.4", features = ["https-rustls", "json-using-serde"] }
+serde_json = "1.0.140"
+jzon = "0.12.5"
+lazy_static = "1.5.0"
+rocket_cors = "0.6.0"
