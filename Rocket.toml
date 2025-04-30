@@ -12,7 +12,7 @@ limits = { json = "10MiB" }
 
 ## set only when compiled in release mode, i.e, `cargo build --release`
 [release]
-port = 80
+port = 443
 ip_header = false
 secret_key = "hPrYyЭRiMyµ5sBB1π+CMæ1køFsåqKvBiQJxBVHQk="
 
