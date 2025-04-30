@@ -15,3 +15,8 @@ limits = { json = "10MiB" }
 port = 80
 ip_header = false
 secret_key = "hPrYyЭRiMyµ5sBB1π+CMæ1køFsåqKvBiQJxBVHQk="
+
+
+[default.tls]
+key = "/etc/letsencrypt/live/inthetrenches.cloud/privkey.pem"     # Path or bytes to DER-encoded ASN.1 PKCS#1/#8 or SEC1 key.
+certs = "/etc/letsencrypt/live/inthetrenches.cloud/cert.pem" # Path or bytes to DER-encoded X.509 TLS cert chain.
