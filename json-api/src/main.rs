@@ -103,7 +103,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .to_cors()?;
 
     let _ = rocket::build()
-        .mount("/", FileServer::from("static/"))
+        .mount("/", FileServer::from("static"))
         .mount("/", routes![tx, count, spammed])
         .attach(cors)
         .launch()
