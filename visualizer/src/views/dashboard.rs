@@ -47,7 +47,6 @@ pub fn Dashboard() -> Element {
 
                                 spawn(async move {
                                     let tx_json = FetchReq::new_for_rpc().unwrap().send(address.read().as_str()).await.unwrap();
-                                    web_sys::console::log_1(&format!("{tx_json:?}").into());
                                     let tx_outcome = serde_json::from_str::<ApiAccounts>(&tx_json).unwrap().info;
 
                                     checked_outcome.write().replace(tx_outcome);

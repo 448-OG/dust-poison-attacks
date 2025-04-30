@@ -27,11 +27,6 @@ lazy_static! {
     static ref URL: String = fetch_key();
 }
 
-// #[get("/")]
-// fn index() -> &'static str {
-//     DOCUMENTATION
-// }
-
 #[post("/tx/<tx_hash>")]
 fn tx(tx_hash: String) -> Json<Accounts> {
     let accounts = fetcher(&tx_hash, &URL);

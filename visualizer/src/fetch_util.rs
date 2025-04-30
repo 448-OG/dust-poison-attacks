@@ -54,8 +54,6 @@ impl FetchReq {
 
         let address = String::from("") + "/tx/" + tx;
 
-        web_sys::console::log_1(&address.as_str().into());
-
         let request = Request::new_with_str_and_init(&address, &self.options)?;
 
         let fetch_promise = web_sys::window().unwrap().fetch_with_request(&request);
