@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rust Wallet Adapter</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+  <link rel="preload" as="script" href="/./assets/visualizer-a215f4e217483cdc.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="/./assets/visualizer_bg-89e69d6f8451c859.wasm" crossorigin></head>
+  <body>
+    <div id="main"></div>
+  <script>
+            // We can't use a module script here because we need to start the script immediately when streaming
+            import("/./assets/visualizer-a215f4e217483cdc.js").then(
+                ({ default: init }) => {
+                init("/./assets/visualizer_bg-89e69d6f8451c859.wasm").then((wasm) => {
+                    if (wasm.__wbindgen_start == undefined) {
+                    wasm.main();
+                    }
+                });
+                }
+            );
+            </script>
+            
+            </body>
+</html>
