@@ -102,8 +102,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     .to_cors()?;
 
+    let assets_path = concat!(env!("CARGO_WORKSPACE_DIR"), "server/static");
+
     let _ = rocket::build()
-        .mount("/", FileServer::from("static"))
+        .mount("/", FileServer::from(assets_path))
         .mount("/", routes![tx, count, spammed])
         .attach(cors)
         .launch()
