@@ -24,7 +24,7 @@ pub(crate) fn App() -> Element {
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
-        document::Title {"Rust Wallet Adapter"}
+        document::Title {"Dust Checker"}
 
         div { class: "w-full flex min-h-screen font-[sans-serif] dark:bg-rich-black bg-white text-black dark:text-white",
 
